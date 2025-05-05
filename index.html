@@ -61,7 +61,6 @@
   <footer id="footer"></footer>
 
   <script>
-    let startTime = null;
     let totalSeconds = localStorage.getItem('fishSeconds') ? parseInt(localStorage.getItem('fishSeconds')) : 0;
 
     function startFishing() {
@@ -69,31 +68,41 @@
         alert("請先輸入時薪！");
         return;
       }
-      if (startTime) {
+      if (localStorage.getItem('startTime')) {
         alert("你已經在摸魚中啦！");
         return;
       }
-      startTime = new Date();
+      const start = new Date().toISOString();
+      localStorage.setItem('startTime', start);
       document.getElementById('status').innerText = "正在摸魚中...🐟";
     }
 
     function stopFishing() {
-      if (!startTime) {
+      const startStr = localStorage.getItem('startTime');
+      if (!startStr) {
         alert("還沒開始摸魚！");
         return;
       }
+      const start = new Date(startStr);
       const now = new Date();
-      const seconds = Math.floor((now - startTime) / 1000);
+      const seconds = Math.floor((now - start) / 1000);
       totalSeconds += seconds;
       localStorage.setItem('fishSeconds', totalSeconds.toString());
-      startTime = null;
+      localStorage.removeItem('startTime');
       updateStatus();
     }
 
     function updateStatus() {
       const wage = parseFloat(document.getElementById('wage').value || "0");
       const perSecond = wage / 3600;
-      const stolen = (totalSeconds * perSecond).toFixed(2);
+      let total = totalSeconds;
+      const startStr = localStorage.getItem('startTime');
+      if (startStr) {
+        const start = new Date(startStr);
+        const now = new Date();
+        total += Math.floor((now - start) / 1000);
+      }
+      const stolen = (total * perSecond).toFixed(2);
       document.getElementById('status').innerText =
         `你目前已經偷了 ${stolen} 元薪水 😺`;
     }
@@ -103,7 +112,13 @@
       if (now.getHours() === 20 && !localStorage.getItem('reported')) {
         const wage = parseFloat(document.getElementById('wage').value || "0");
         const perSecond = wage / 3600;
-        const stolen = (totalSeconds * perSecond).toFixed(2);
+        let total = totalSeconds;
+        const startStr = localStorage.getItem('startTime');
+        if (startStr) {
+          const start = new Date(startStr);
+          total += Math.floor((now - start) / 1000);
+        }
+        const stolen = (total * perSecond).toFixed(2);
         alert(`今天你總共偷了 ${stolen} 元薪水，辛苦摸魚啦 🐟🐱`);
         document.getElementById('footer').innerText =
           `今日總偷薪水：${stolen} 元`;
@@ -112,20 +127,24 @@
     }
 
     setInterval(() => {
-      if (startTime) updateStatus();
+      updateStatus();
       checkEightPM();
     }, 1000);
 
     window.onload = () => {
       updateStatus();
-      // 每天清除紀錄（隔天再偷）
       const today = new Date().toDateString();
       if (localStorage.getItem('lastDate') !== today) {
         localStorage.setItem('lastDate', today);
         localStorage.removeItem('fishSeconds');
         localStorage.removeItem('reported');
+        localStorage.removeItem('startTime');
         totalSeconds = 0;
         updateStatus();
+      }
+
+      if (localStorage.getItem('startTime')) {
+        document.getElementById('status').innerText = "正在摸魚中...🐟";
       }
     }
   </script>
