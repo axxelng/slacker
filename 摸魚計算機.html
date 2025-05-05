@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>上班摸魚計算機 🐟🐱</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive;
+      background: #f0f8ff url('https://media.istockphoto.com/id/1045561036/zh/%E5%90%91%E9%87%8F/%E5%8F%AF%E6%84%9B%E7%9A%84%E9%AD%9A%E7%9A%84%E6%80%A7%E6%A0%BC%E5%8D%A1%E9%80%9A%E5%90%91%E9%87%8F%E6%8F%92%E7%95%AB.jpg?s=612x612&w=0&k=20&c=EOvVG_QqBts9x50ZWWprtAfFw0vpPCtzh-XxgCCFAX8=') repeat-x bottom;
+      background-size: contain;
+      text-align: center;
+      padding: 30px;
+    }
+    h1 {
+      font-size: 2.5em;
+      color: #333;
+      margin-bottom: 10px;
+    }
+    input, button {
+      padding: 10px 15px;
+      margin: 10px;
+      font-size: 1.2em;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+    #status {
+      font-size: 1.5em;
+      margin-top: 20px;
+      color: #e91e63;
+    }
+    #cat-img {
+      width: 150px;
+      margin-top: 30px;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    footer {
+      margin-top: 40px;
+      font-size: 1em;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <h1>上班摸魚計算機 🐟🐱</h1>
+
+  <label for="wage">請輸入你的時薪（元/小時）：</label><br/>
+  <input type="number" id="wage" placeholder="例如：200" /><br/>
+
+  <button onclick="startFishing()">開始摸魚</button>
+  <button onclick="stopFishing()">結束摸魚</button>
+
+  <div id="status">你目前還沒開始摸魚喔～</div>
+
+  <img id="cat-img" src="https://guavanthropology.tw/sites/guavanthropology/files/content/f2/f/mg2.gif" alt="可愛貓咪" />
+
+  <footer id="footer"></footer>
+
+  <script>
+    let startTime = null;
+    let totalSeconds = localStorage.getItem('fishSeconds') ? parseInt(localStorage.getItem('fishSeconds')) : 0;
+
+    function startFishing() {
+      if (!document.getElementById('wage').value) {
+        alert("請先輸入時薪！");
+        return;
+      }
+      if (startTime) {
+        alert("你已經在摸魚中啦！");
+        return;
+      }
+      startTime = new Date();
+      document.getElementById('status').innerText = "正在摸魚中...🐟";
+    }
+
+    function stopFishing() {
+      if (!startTime) {
+        alert("還沒開始摸魚！");
+        return;
+      }
+      const now = new Date();
+      const seconds = Math.floor((now - startTime) / 1000);
+      totalSeconds += seconds;
+      localStorage.setItem('fishSeconds', totalSeconds.toString());
+      startTime = null;
+      updateStatus();
+    }
+
+    function updateStatus() {
+      const wage = parseFloat(document.getElementById('wage').value || "0");
+      const perSecond = wage / 3600;
+      const stolen = (totalSeconds * perSecond).toFixed(2);
+      document.getElementById('status').innerText =
+        `你目前已經偷了 ${stolen} 元薪水 😺`;
+    }
+
+    function checkEightPM() {
+      const now = new Date();
+      if (now.getHours() === 20 && !localStorage.getItem('reported')) {
+        const wage = parseFloat(document.getElementById('wage').value || "0");
+        const perSecond = wage / 3600;
+        const stolen = (totalSeconds * perSecond).toFixed(2);
+        alert(`今天你總共偷了 ${stolen} 元薪水，辛苦摸魚啦 🐟🐱`);
+        document.getElementById('footer').innerText =
+          `今日總偷薪水：${stolen} 元`;
+        localStorage.setItem('reported', 'yes');
+      }
+    }
+
+    setInterval(() => {
+      if (startTime) updateStatus();
+      checkEightPM();
+    }, 1000);
+
+    window.onload = () => {
+      updateStatus();
+      // 每天清除紀錄（隔天再偷）
+      const today = new Date().toDateString();
+      if (localStorage.getItem('lastDate') !== today) {
+        localStorage.setItem('lastDate', today);
+        localStorage.removeItem('fishSeconds');
+        localStorage.removeItem('reported');
+        totalSeconds = 0;
+        updateStatus();
+      }
+    }
+  </script>
+</body>
+</html>
