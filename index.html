@@ -25,10 +25,13 @@
       <p>👋 歡迎，<span id="user-email"></span>！<button onclick="signOut()">登出</button></p>
 
       <!-- 使用者設定 -->
-      <h3>設定</h3>
-      <label>時薪（元）：<input type="number" id="hourly-rate" /></label><br/>
-      <label>每月幾號發薪：<input type="number" id="payday" /></label><br/>
-      <button onclick="saveSettings()">儲存設定</button>
+      <div id="settings-form" style="display:none;">
+        <h3>設定</h3>
+        <label>時薪（元）：<input type="number" id="hourly-rate" /></label><br/>
+        <label>每月幾號發薪：<input type="number" id="payday" /></label><br/>
+        <button onclick="saveSettings()">儲存設定</button>
+      </div>
+      <button id="edit-settings-btn" onclick="showSettings()" style="display:none;">✏ 更改設定</button>
 
       <!-- 控制按鈕 -->
       <h3>開始摸魚</h3>
@@ -51,9 +54,7 @@
     <footer id="footer"></footer>
   </div>
 
- <!-- 改用 ESM 模組載入方式 -->
-<script type="module" src="app.js"></script>
+  <!-- 改用 ESM 模組載入方式 -->
+  <script type="module" src="app.js"></script>
 </body>
 </html>
-
-
