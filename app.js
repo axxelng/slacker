@@ -1,8 +1,7 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-// ✅ 填入你的 Supabase 設定
 const supabaseUrl = "https://eucslvrdocoxrodttipy.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1Y3NsdnJkb2NveHJvZHR0aXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ2MzU3NDAsImV4cCI6MjA3MDIxMTc0MH0.hPPmz92thDkeO-tr58raZrngJrnAdW_iIS79KmeVxOY";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."; // 略去中間避免過長
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // ✅ 測試連線
@@ -46,7 +45,7 @@ window.signOut = async () => {
   document.getElementById("app-section").style.display = "none";
 };
 
-// ✅ 儲存設定（時薪、發薪日）
+// ✅ 儲存設定
 window.saveSettings = async () => {
   const hourly_rate = parseInt(document.getElementById("hourly-rate").value);
   const payday = parseInt(document.getElementById("payday").value);
@@ -72,6 +71,7 @@ window.saveSettings = async () => {
 async function checkSettings() {
   const { data: { user } } = await supabase.auth.getUser();
   const { data, error } = await supabase.from("user_settings").select("*").eq("user_id", user.id).single();
+
   if (!data || !data.hourly_rate || !data.payday) {
     document.getElementById("settings-form").style.display = "block";
     document.getElementById("edit-settings-btn").style.display = "none";
@@ -89,6 +89,7 @@ async function checkSettings() {
   }
 }
 
+// ✅ 顯示設定表單
 window.showSettings = () => {
   document.getElementById("settings-form").style.display = "block";
   document.getElementById("edit-settings-btn").style.display = "none";
@@ -154,7 +155,7 @@ async function fetchStats() {
   document.getElementById("payday-countdown").textContent = countdown;
 }
 
-// ✅ 更新狀態顯示
+// ✅ 狀態
 function updateStatus() {
   if (localStorage.getItem("startTime")) {
     document.getElementById("status").textContent = "🐟 正在摸魚中...";
@@ -162,4 +163,3 @@ function updateStatus() {
     document.getElementById("status").textContent = "你目前還沒開始摸魚喔～";
   }
 }
-
