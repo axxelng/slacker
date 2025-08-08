@@ -104,3 +104,8 @@ async function endMoyu() {
   fetchStats();
   updateStatus();
 }
+// 測試是否連上 Supabase（打開 F12 看 Console 有沒有印出結果）
+supabase.auth.getSession().then(({ data, error }) => {
+  console.log("✅ Supabase 已連接：", data)
+  if (error) console.error("❌ 發生錯誤：", error)
+})
