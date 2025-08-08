@@ -11,35 +11,43 @@
   <div class="container">
     <h1>上班摸魚計算機 🐟🐱</h1>
 
-  <!-- 登入後內容區塊 -->
-<div id="app-section" style="display:none;">
-  <p>👋 歡迎，<span id="user-email"></span>！<button onclick="signOut()">登出</button></p>
+    <!-- 登入區塊 -->
+    <div id="auth-section">
+      <input type="email" id="email" placeholder="Email" />
+      <input type="password" id="password" placeholder="密碼" />
+      <button onclick="signIn()">登入</button>
+      <button onclick="signUp()">註冊</button>
+    </div>
 
-  <!-- 設定按鈕 -->
-  <button onclick="toggleSettings()">⚙️ 修改設定</button>
+    <!-- 登入後內容區塊 -->
+    <div id="app-section" style="display:none;">
+      <p>👋 歡迎，<span id="user-email"></span>！<button onclick="signOut()">登出</button></p>
 
-  <!-- 使用者設定欄 -->
-  <div id="setting-section" style="display:none;">
-    <h3>設定</h3>
-    <label>時薪（元）：<input type="number" id="hourly-rate" /></label><br/>
-    <label>每月幾號發薪：<input type="number" id="payday" /></label><br/>
-    <button onclick="saveSettings()">儲存設定</button>
-  </div>
+      <!-- 設定按鈕 -->
+      <button onclick="toggleSettings()" id="edit-settings-btn">⚙️ 修改設定</button>
 
-  <!-- 控制按鈕 -->
-  <h3>開始摸魚</h3>
-  <button id="start-btn" onclick="startMoyu()">開始摸魚</button>
-  <button id="end-btn" onclick="endMoyu()" disabled>結束摸魚</button>
+      <!-- 使用者設定欄 -->
+      <div id="setting-section" style="display:none;">
+        <h3>設定</h3>
+        <label>時薪（元）：<input type="number" id="hourly-rate" /></label><br/>
+        <label>每月幾號發薪：<input type="number" id="payday" /></label><br/>
+        <button onclick="saveSettings()">儲存設定</button>
+      </div>
 
-  <!-- 動態狀態 -->
-  <div id="status">你目前還沒開始摸魚喔～</div>
+      <!-- 控制按鈕 -->
+      <h3>開始摸魚</h3>
+      <button id="start-btn" onclick="startMoyu()">開始摸魚</button>
+      <button id="end-btn" onclick="endMoyu()" disabled>結束摸魚</button>
 
-  <!-- 統計區 -->
-  <h3>本月偷薪統計</h3>
-  <p>總摸魚時間：<span id="total-minutes">--</span> 分鐘</p>
-  <p>總偷薪金額：<span id="total-money">--</span> 元</p>
-  <p>距離發薪日還有：<span id="payday-countdown">--</span> 天</p>
-</div>
+      <!-- 動態狀態 -->
+      <div id="status">你目前還沒開始摸魚喔～</div>
+
+      <!-- 統計區 -->
+      <h3>本月偷薪統計</h3>
+      <p>總摸魚時間：<span id="total-minutes">--</span> 分鐘</p>
+      <p>總偷薪金額：<span id="total-money">--</span> 元</p>
+      <p>距離發薪日還有：<span id="payday-countdown">--</span> 天</p>
+    </div>
 
     <!-- 動畫 -->
     <img id="cat-img" src="https://guavanthropology.tw/sites/guavanthropology/files/content/f2/f/mg2.gif" alt="可愛貓咪" />
@@ -51,4 +59,3 @@
   <script type="module" src="app.js"></script>
 </body>
 </html>
-
