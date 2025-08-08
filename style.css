@@ -2,9 +2,13 @@
 body {
   margin: 0;
   font-family: 'Cute Font', 'Segoe UI', sans-serif;
-  background: linear-gradient(to bottom right, #dff6ff, #c1e8ff);
+  background: linear-gradient(135deg, #dff6ff 0%, #c1e8ff 100%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
   color: #333;
 }
+
 
 /* 🎀 中央白卡片 */
 .container {
