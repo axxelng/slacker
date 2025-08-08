@@ -1,11 +1,11 @@
-/* 🔵 寶寶藍漸層背景 */
 body {
   margin: 0;
   font-family: 'Cute Font', 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #dff6ff 0%, #c1e8ff 100%);
+  height: 100vh;
+  background: linear-gradient(to bottom right, #e0f7ff, #b3e5fc);
   background-repeat: no-repeat;
+  background-size: 100% 100%;
   background-attachment: fixed;
-  background-size: cover;
   color: #333;
 }
 
