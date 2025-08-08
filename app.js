@@ -5,12 +5,11 @@ const SUPABASE_URL = "https://eucs1vrdocxordttpiy.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1Y3NsdnJkb2NveHJvZHR0aXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ2MzU3NDAsImV4cCI6MjA3MDIxMTc0MH0.hPPmz92thDkeO-tr58raZrngJrnAdW_iIS79KmeVxOY";
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-
 // ===== 登入 / 註冊功能 =====
 async function signUp() {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
-  const { error } = await client.auth.signUp({ email, password });
+  const { error } = await supabase.auth.signUp({ email, password });
   if (error) return alert("註冊失敗：" + error.message);
   alert("註冊成功，請至信箱確認信件！");
 }
@@ -18,21 +17,21 @@ async function signUp() {
 async function signIn() {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
-  const { data, error } = await client.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) return alert("登入失敗：" + error.message);
   localStorage.setItem("wage", document.getElementById("wage").value);
   showApp();
 }
 
 async function signOut() {
-  await client.auth.signOut();
+  await supabase.auth.signOut();
   document.getElementById("app-section").style.display = "none";
   document.getElementById("auth-section").style.display = "block";
 }
 
 // ===== 畫面切換 =====
 async function showApp() {
-  const { data: { user } } = await client.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return;
 
   document.getElementById("user-email").innerText = user.email;
@@ -54,9 +53,9 @@ async function showApp() {
 async function saveSettings() {
   const hourly_rate = parseInt(document.getElementById("hourly-rate").value);
   const payday = parseInt(document.getElementById("payday").value);
-  const { data: { user } } = await client.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
 
-  await client.from("user_settings").upsert({
+  await supabase.from("user_settings").upsert({
     user_id: user.id,
     hourly_rate,
     payday
@@ -65,8 +64,8 @@ async function saveSettings() {
 }
 
 async function loadSettings() {
-  const { data: { user } } = await client.auth.getUser();
-  const { data, error } = await client.from("user_settings").select("*").eq("user_id", user.id).single();
+  const { data: { user } } = await supabase.auth.getUser();
+  const { data, error } = await supabase.from("user_settings").select("*").eq("user_id", user.id).single();
   if (data) {
     document.getElementById("hourly-rate").value = data.hourly_rate || "";
     document.getElementById("payday").value = data.payday || "";
@@ -90,8 +89,8 @@ async function endMoyu() {
   const end = new Date();
   const durationMin = Math.ceil((end - start) / 60000);
 
-  const { data: { user } } = await client.auth.getUser();
-  await client.from("moyu_records").insert({
+  const { data: { user } } = await supabase.auth.getUser();
+  await supabase.from("moyu_records").insert({
     user_id: user.id,
     start_time: start.toISOString(),
     end_time: end.toISOString(),
@@ -105,7 +104,3 @@ async function endMoyu() {
   fetchStats();
   updateStatus();
 }
-
-// ===== 撈統計資料 + 顯示發薪倒數 =====
-async function fetchStats() {
-  const { d
