@@ -1,83 +1,75 @@
-@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
-
+/* 奶油寶寶藍漸層背景 */
 body {
   margin: 0;
-  padding: 0;
-  font-family: 'Comic Neue', cursive, sans-serif;
-  background: linear-gradient(to bottom, #fdf6f0, #ffe5ec);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  font-family: 'Cute Font', 'Segoe UI', sans-serif;
+  background: linear-gradient(to bottom right, #c6e6fb, #e6f4ff);
+  color: #333;
 }
 
-h1 {
-  font-size: 2.8em;
-  margin-bottom: 20px;
-  color: #ff69b4;
-  text-shadow: 1px 1px 2px #fff;
-}
-
+/* 可愛置中容器 */
 .container {
-  background: #fff0f6;
-  border: 2px dashed #ffc0cb;
+  max-width: 500px;
+  margin: 50px auto;
+  background: white;
   padding: 30px;
   border-radius: 20px;
-  box-shadow: 0 5px 15px rgba(255, 182, 193, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   text-align: center;
-  width: 90%;
-  max-width: 420px;
 }
 
+/* 標題加可愛字型與顏色 */
+h1 {
+  font-family: 'Cute Font', 'Segoe UI', cursive;
+  font-size: 36px;
+  color: #ff70a6;
+  margin-bottom: 20px;
+}
+
+/* 輸入框樣式 */
 input[type="email"],
 input[type="password"],
 input[type="number"] {
+  padding: 10px;
+  margin: 10px;
   width: 80%;
-  padding: 12px;
-  margin: 10px 0;
-  border-radius: 10px;
-  border: 1px solid #ffb6c1;
-  font-size: 1em;
-  outline: none;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  font-size: 16px;
 }
 
+/* 按鈕樣式 */
 button {
-  padding: 10px 20px;
-  margin: 10px 5px;
-  background: linear-gradient(to right, #ff9eb5, #ffc8dd);
+  background-color: #ffd1dc;
+  color: #333;
   border: none;
   border-radius: 20px;
-  font-size: 1em;
-  color: #fff;
+  padding: 10px 20px;
+  margin: 8px;
+  font-size: 16px;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.2s ease-in-out;
 }
 
 button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(255, 192, 203, 0.5);
+  background-color: #ffb6c1;
 }
 
-#status {
-  font-size: 1.3em;
-  color: #d6336c;
+/* 小貓圖調整 */
+#cat-img {
   margin-top: 20px;
+  width: 120px;
+  height: auto;
 }
 
-img#cat-img {
-  width: 180px;
-  margin-top: 20px;
-  animation: float 3s ease-in-out infinite;
-}
+/* 手機適配 */
+@media (max-width: 600px) {
+  .container {
+    width: 90%;
+    margin: 20px auto;
+  }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-footer {
-  margin-top: 30px;
-  font-size: 0.9em;
-  color: #888;
+  input,
+  button {
+    width: 90%;
+  }
 }
