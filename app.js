@@ -36,9 +36,7 @@ window.signIn = async () => {
   document.getElementById("app-section").style.display = "block";
   document.getElementById("user-email").textContent = email;
 
-  await loadSettings();
-  await fetchStats();
-  updateStatus();
+  await checkSettings();
 };
 
 // ✅ 登出
@@ -59,18 +57,42 @@ window.saveSettings = async () => {
     hourly_rate,
     payday
   });
+
   alert("設定已儲存！");
+  document.getElementById("settings-form").style.display = "none";
+  document.getElementById("edit-settings-btn").style.display = "inline-block";
+  document.getElementById("start-btn").style.display = "inline-block";
+  document.getElementById("end-btn").style.display = "inline-block";
+
+  await fetchStats();
+  updateStatus();
 };
 
-// ✅ 載入設定
-async function loadSettings() {
+// ✅ 檢查是否已設定過
+async function checkSettings() {
   const { data: { user } } = await supabase.auth.getUser();
   const { data, error } = await supabase.from("user_settings").select("*").eq("user_id", user.id).single();
-  if (data) {
-    document.getElementById("hourly-rate").value = data.hourly_rate || "";
-    document.getElementById("payday").value = data.payday || "";
+  if (!data || !data.hourly_rate || !data.payday) {
+    document.getElementById("settings-form").style.display = "block";
+    document.getElementById("edit-settings-btn").style.display = "none";
+    document.getElementById("start-btn").style.display = "none";
+    document.getElementById("end-btn").style.display = "none";
+  } else {
+    document.getElementById("hourly-rate").value = data.hourly_rate;
+    document.getElementById("payday").value = data.payday;
+    document.getElementById("settings-form").style.display = "none";
+    document.getElementById("edit-settings-btn").style.display = "inline-block";
+    document.getElementById("start-btn").style.display = "inline-block";
+    document.getElementById("end-btn").style.display = "inline-block";
+    await fetchStats();
+    updateStatus();
   }
 }
+
+window.showSettings = () => {
+  document.getElementById("settings-form").style.display = "block";
+  document.getElementById("edit-settings-btn").style.display = "none";
+};
 
 // ✅ 開始摸魚
 window.startMoyu = () => {
@@ -140,3 +162,4 @@ function updateStatus() {
     document.getElementById("status").textContent = "你目前還沒開始摸魚喔～";
   }
 }
+
