@@ -1,33 +1,47 @@
-// 初始化 Supabase
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const SUPABASE_URL = "https://eucslvrdocoxrodttipy.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1Y3NsdnJkb2NveHJvZHR0aXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ2MzU3NDAsImV4cCI6MjA3MDIxMTc0MH0.hPPmz92thDkeO-tr58raZrngJrnAdW_iIS79KmeVxOY";
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseUrl = "https://eucslvrdocoxrodttipy.supabase.co"; // ← 確認你的 Supabase 網址
+const supabaseKey = "YOUR_ANON_KEY"; // ← 用你的 anon key 替換
 
-// 登入 / 註冊功能
-async function signUp() {
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-  const { error } = await supabase.auth.signUp({ email, password });
-  if (error) return alert("註冊失敗：" + error.message);
-  alert("註冊成功，請至信箱確認信件！");
-}
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-async function signIn() {
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) return alert("登入失敗：" + error.message);
-  localStorage.setItem("wage", document.getElementById("wage").value);
-  showApp();
-}
+document.addEventListener("DOMContentLoaded", () => {
+  // 📌 修正登入函式
+  window.signIn = async () => {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
 
-async function signOut() {
-  await supabase.auth.signOut();
-  document.getElementById("app-section").style.display = "none";
-  document.getElementById("auth-section").style.display = "block";
-}
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      alert("登入失敗：" + error.message);
+    } else {
+      alert("登入成功！");
+      document.getElementById("auth-section").style.display = "none";
+      document.getElementById("app-section").style.display = "block";
+      document.getElementById("user-email").textContent = email;
+    }
+  };
+
+  // 📌 註冊函式
+  window.signUp = async () => {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    const { error } = await supabase.auth.signUp({ email, password });
+    if (error) {
+      alert("註冊失敗：" + error.message);
+    } else {
+      alert("註冊成功，請至信箱點擊確認信");
+    }
+  };
+
+  // 📌 登出
+  window.signOut = async () => {
+    await supabase.auth.signOut();
+    document.getElementById("auth-section").style.display = "block";
+    document.getElementById("app-section").style.display = "none";
+  };
+});
 
 async function showApp() {
   const { data: { user } } = await supabase.auth.getUser();
