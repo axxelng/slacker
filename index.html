@@ -4,149 +4,52 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>上班摸魚計算機 🐟🐱</title>
-  <style>
-    body {
-      font-family: 'Comic Sans MS', cursive;
-      background: #f0f8ff url('https://media.istockphoto.com/id/1045561036/zh/%E5%90%91%E9%87%8F/%E5%8F%AF%E6%84%9B%E7%9A%84%E9%AD%9A%E7%9A%84%E6%80%A7%E6%A0%BC%E5%8D%A1%E9%80%9A%E5%90%91%E9%87%8F%E6%8F%92%E7%95%AB.jpg?s=612x612&w=0&k=20&c=EOvVG_QqBts9x50ZWWprtAfFw0vpPCtzh-XxgCCFAX8=') repeat-x bottom;
-      background-size: contain;
-      text-align: center;
-      padding: 30px;
-    }
-    h1 {
-      font-size: 2.5em;
-      color: #333;
-      margin-bottom: 10px;
-    }
-    input, button {
-      padding: 10px 15px;
-      margin: 10px;
-      font-size: 1.2em;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-    }
-    #status {
-      font-size: 1.5em;
-      margin-top: 20px;
-      color: #e91e63;
-    }
-    #cat-img {
-      width: 150px;
-      margin-top: 30px;
-      animation: float 3s ease-in-out infinite;
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-    footer {
-      margin-top: 40px;
-      font-size: 1em;
-      color: #777;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <h1>上班摸魚計算機 🐟🐱</h1>
 
-  <label for="wage">請輸入你的時薪（元/小時）：</label><br/>
-  <input type="number" id="wage" placeholder="例如：200" /><br/>
+  <!-- 登入區塊 -->
+  <div id="auth-section">
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="密碼">
+    <br/>
+    <button onclick="signUp()">註冊</button>
+    <button onclick="signIn()">登入</button>
+  </div>
 
-  <button onclick="startFishing()">開始摸魚</button>
-  <button onclick="stopFishing()">結束摸魚</button>
+  <!-- 登入後內容區塊 -->
+  <div id="app-section" style="display:none;">
+    <p>👋 歡迎，<span id="user-email"></span>！<button onclick="signOut()">登出</button></p>
 
-  <div id="status">你目前還沒開始摸魚喔～</div>
+    <!-- 使用者設定 -->
+    <h3>設定</h3>
+    <label>時薪（元）：<input type="number" id="hourly-rate" /></label><br/>
+    <label>每月幾號發薪：<input type="number" id="payday" /></label><br/>
+    <button onclick="saveSettings()">儲存設定</button>
 
+    <!-- 控制按鈕 -->
+    <h3>開始摸魚</h3>
+    <button id="start-btn" onclick="startMoyu()">開始摸魚</button>
+    <button id="end-btn" onclick="endMoyu()" disabled>結束摸魚</button>
+
+    <!-- 動態狀態 -->
+    <div id="status">你目前還沒開始摸魚喔～</div>
+
+    <!-- 統計區 -->
+    <h3>本月偷薪統計</h3>
+    <p>總摸魚時間：<span id="total-minutes">--</span> 分鐘</p>
+    <p>總偷薪金額：<span id="total-money">--</span> 元</p>
+    <p>距離發薪日還有：<span id="payday-countdown">--</span> 天</p>
+  </div>
+
+  <!-- 動畫 -->
   <img id="cat-img" src="https://guavanthropology.tw/sites/guavanthropology/files/content/f2/f/mg2.gif" alt="可愛貓咪" />
 
   <footer id="footer"></footer>
 
-  <script>
-    let totalSeconds = localStorage.getItem('fishSeconds') ? parseInt(localStorage.getItem('fishSeconds')) : 0;
-
-    function startFishing() {
-      if (!document.getElementById('wage').value) {
-        alert("請先輸入時薪！");
-        return;
-      }
-      if (localStorage.getItem('startTime')) {
-        alert("你已經在摸魚中啦！");
-        return;
-      }
-      const start = new Date().toISOString();
-      localStorage.setItem('startTime', start);
-      document.getElementById('status').innerText = "正在摸魚中...🐟";
-    }
-
-    function stopFishing() {
-      const startStr = localStorage.getItem('startTime');
-      if (!startStr) {
-        alert("還沒開始摸魚！");
-        return;
-      }
-      const start = new Date(startStr);
-      const now = new Date();
-      const seconds = Math.floor((now - start) / 1000);
-      totalSeconds += seconds;
-      localStorage.setItem('fishSeconds', totalSeconds.toString());
-      localStorage.removeItem('startTime');
-      updateStatus();
-    }
-
-    function updateStatus() {
-      const wage = parseFloat(document.getElementById('wage').value || "0");
-      const perSecond = wage / 3600;
-      let total = totalSeconds;
-      const startStr = localStorage.getItem('startTime');
-      if (startStr) {
-        const start = new Date(startStr);
-        const now = new Date();
-        total += Math.floor((now - start) / 1000);
-      }
-      const stolen = (total * perSecond).toFixed(2);
-      document.getElementById('status').innerText =
-        `你目前已經偷了 ${stolen} 元薪水 😺`;
-    }
-
-    function checkEightPM() {
-      const now = new Date();
-      if (now.getHours() === 20 && !localStorage.getItem('reported')) {
-        const wage = parseFloat(document.getElementById('wage').value || "0");
-        const perSecond = wage / 3600;
-        let total = totalSeconds;
-        const startStr = localStorage.getItem('startTime');
-        if (startStr) {
-          const start = new Date(startStr);
-          total += Math.floor((now - start) / 1000);
-        }
-        const stolen = (total * perSecond).toFixed(2);
-        alert(`今天你總共偷了 ${stolen} 元薪水，辛苦摸魚啦 🐟🐱`);
-        document.getElementById('footer').innerText =
-          `今日總偷薪水：${stolen} 元`;
-        localStorage.setItem('reported', 'yes');
-      }
-    }
-
-    setInterval(() => {
-      updateStatus();
-      checkEightPM();
-    }, 1000);
-
-    window.onload = () => {
-      updateStatus();
-      const today = new Date().toDateString();
-      if (localStorage.getItem('lastDate') !== today) {
-        localStorage.setItem('lastDate', today);
-        localStorage.removeItem('fishSeconds');
-        localStorage.removeItem('reported');
-        localStorage.removeItem('startTime');
-        totalSeconds = 0;
-        updateStatus();
-      }
-
-      if (localStorage.getItem('startTime')) {
-        document.getElementById('status').innerText = "正在摸魚中...🐟";
-      }
-    }
-  </script>
+  <!-- 載入 Supabase SDK 和你的 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
