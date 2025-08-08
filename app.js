@@ -104,6 +104,14 @@ async function endMoyu() {
   fetchStats();
   updateStatus();
 }
+// 將主要函式綁定到全域，讓 HTML onclick 可以使用
+window.signUp = signUp;
+window.signIn = signIn;
+window.signOut = signOut;
+window.startMoyu = startMoyu;
+window.endMoyu = endMoyu;
+window.saveSettings = saveSettings;
+
 // 測試是否連上 Supabase（打開 F12 看 Console 有沒有印出結果）
 supabase.auth.getSession().then(({ data, error }) => {
   console.log("✅ Supabase 已連接：", data)
