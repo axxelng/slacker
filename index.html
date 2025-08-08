@@ -25,6 +25,13 @@
 
       <!-- 設定按鈕 -->
       <button onclick="toggleSettings()" id="edit-settings-btn">⚙️ 修改設定</button>
+      <!-- 🛠️ 設定表單（一定要加這個） -->
+<div id="settings-form" style="display:none;">
+  <h3>設定</h3>
+  <label>時薪（元）：<input type="number" id="hourly-rate" /></label><br/>
+  <label>每月幾號發薪：<input type="number" id="payday" /></label><br/>
+  <button onclick="saveSettings()">儲存設定</button>
+</div>
 
       <!-- 使用者設定欄 -->
       <div id="setting-section" style="display:none;">
@@ -59,3 +66,4 @@
   <script type="module" src="app.js"></script>
 </body>
 </html>
+
