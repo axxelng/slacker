@@ -25,6 +25,15 @@
 
       <!-- ✅ 設定按鈕 -->
       <button onclick="toggleSettings()" id="edit-settings-btn">⚙️ 修改設定</button>
+       <!-- ✅ toggleSettings 定義（如果沒在 app.js） -->
+  <script>
+    window.toggleSettings = () => {
+      const section = document.getElementById("settings-form");
+      if (!section) return;
+      section.style.display = (section.style.display === "none") ? "block" : "none";
+      document.getElementById("edit-settings-btn")?.style.display = "none";
+    };
+  </script>
 
       <!-- ✅ 設定表單 -->
       <div id="settings-form" style="display:none;">
@@ -58,14 +67,6 @@
   <!-- ✅ 載入 app.js -->
   <script type="module" src="app.js"></script>
 
-  <!-- ✅ toggleSettings 定義（如果沒在 app.js） -->
-  <script>
-    window.toggleSettings = () => {
-      const section = document.getElementById("settings-form");
-      if (!section) return;
-      section.style.display = (section.style.display === "none") ? "block" : "none";
-      document.getElementById("edit-settings-btn")?.style.display = "none";
-    };
-  </script>
 </body>
 </html>
+
