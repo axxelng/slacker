@@ -11,7 +11,7 @@
   <div class="container">
     <h1>上班摸魚計算機 🐟🐱</h1>
 
-    <!-- 登入區塊 -->
+    <!-- ✅ 登入區塊 -->
     <div id="auth-section">
       <input type="email" id="email" placeholder="Email" />
       <input type="password" id="password" placeholder="密碼" />
@@ -19,22 +19,15 @@
       <button onclick="signUp()">註冊</button>
     </div>
 
-    <!-- 登入後內容區塊 -->
+    <!-- ✅ 登入後內容 -->
     <div id="app-section" style="display:none;">
       <p>👋 歡迎，<span id="user-email"></span>！<button onclick="signOut()">登出</button></p>
 
-      <!-- 設定按鈕 -->
+      <!-- ✅ 設定按鈕 -->
       <button onclick="toggleSettings()" id="edit-settings-btn">⚙️ 修改設定</button>
-      <!-- 🛠️ 設定表單（一定要加這個） -->
-<div id="settings-form" style="display:none;">
-  <h3>設定</h3>
-  <label>時薪（元）：<input type="number" id="hourly-rate" /></label><br/>
-  <label>每月幾號發薪：<input type="number" id="payday" /></label><br/>
-  <button onclick="saveSettings()">儲存設定</button>
-</div>
 
-      <!-- 使用者設定欄 -->
-      <div id="setting-section" style="display:none;">
+      <!-- ✅ 設定表單 -->
+      <div id="settings-form" style="display:none;">
         <h3>設定</h3>
         <label>時薪（元）：<input type="number" id="hourly-rate" /></label><br/>
         <label>每月幾號發薪：<input type="number" id="payday" /></label><br/>
@@ -56,14 +49,23 @@
       <p>距離發薪日還有：<span id="payday-countdown">--</span> 天</p>
     </div>
 
-    <!-- 動畫 -->
+    <!-- 可愛動畫 -->
     <img id="cat-img" src="https://guavanthropology.tw/sites/guavanthropology/files/content/f2/f/mg2.gif" alt="可愛貓咪" />
 
     <footer id="footer"></footer>
   </div>
 
-  <!-- 改用 ESM 模組載入方式 -->
+  <!-- ✅ 載入 app.js -->
   <script type="module" src="app.js"></script>
+
+  <!-- ✅ toggleSettings 定義（如果沒在 app.js） -->
+  <script>
+    window.toggleSettings = () => {
+      const section = document.getElementById("settings-form");
+      if (!section) return;
+      section.style.display = (section.style.display === "none") ? "block" : "none";
+      document.getElementById("edit-settings-btn")?.style.display = "none";
+    };
+  </script>
 </body>
 </html>
-
