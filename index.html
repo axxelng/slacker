@@ -14,12 +14,17 @@
     <!-- ✅ 登入區塊 -->
     <!-- 登入區塊 -->
 <div id="auth-section">
-  <input type="text" id="nickname" placeholder="暱稱（註冊用）" />
   <input type="email" id="email" placeholder="Email" />
   <input type="password" id="password" placeholder="密碼" />
   <button onclick="signIn()">登入</button>
   <button onclick="signUp()">註冊</button>
 </div>
+    <h3>訪客登入區</h3>
+<input type="text" id="guest-nickname" placeholder="暱稱" />
+<input type="password" id="guest-password" placeholder="密碼" />
+<button onclick="guestSignUp()">訪客註冊</button>
+<button onclick="guestSignIn()">訪客登入</button>
+
 
 
     <!-- ✅ 登入後內容 -->
@@ -72,5 +77,6 @@
 
 </body>
 </html>
+
 
 
