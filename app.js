@@ -94,6 +94,14 @@ window.showSettings = () => {
   document.getElementById("settings-form").style.display = "block";
   document.getElementById("edit-settings-btn").style.display = "none";
 };
+// ✅ 切換設定顯示
+window.toggleSettings = () => {
+  const section = document.getElementById("settings-form");
+  if (!section) return;
+  section.style.display = (section.style.display === "none") ? "block" : "none";
+  document.getElementById("edit-settings-btn")?.style.display = "none";
+};
+
 
 // ✅ 開始摸魚
 window.startMoyu = () => {
