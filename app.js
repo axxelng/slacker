@@ -1,28 +1,32 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabaseUrl = "https://eucslvrdocoxrodttipy.supabase.co"; // ← 確認你的 Supabase 網址
-const supabaseKey = "YOUR_ANON_KEY"; // ← 用你的 anon key 替換
-
+// ✅ 填入你的 Supabase 設定
+const supabaseUrl = "https://eucslvrdocoxrodttipy.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1Y3NsdnJkb2NveHJvZHR0aXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ2MzU3NDAsImV4cCI6MjA3MDIxMTc0MH0.hPPmz92thDkeO-tr58raZrngJrnAdW_iIS79KmeVxOY";
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+// ✅ 等待 DOM 載入完再掛事件
 document.addEventListener("DOMContentLoaded", () => {
-  // 📌 修正登入函式
+  // 📌 登入
   window.signIn = async () => {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+
+    if (!emailInput || !passwordInput) return alert("找不到輸入欄位");
+
+    const email = emailInput.value;
+    const password = passwordInput.value;
 
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
       alert("登入失敗：" + error.message);
     } else {
       alert("登入成功！");
-      document.getElementById("auth-section").style.display = "none";
-      document.getElementById("app-section").style.display = "block";
-      document.getElementById("user-email").textContent = email;
+      showApp();
     }
   };
 
-  // 📌 註冊函式
+  // 📌 註冊
   window.signUp = async () => {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
@@ -31,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (error) {
       alert("註冊失敗：" + error.message);
     } else {
-      alert("註冊成功，請至信箱點擊確認信");
+      alert("註冊成功，請去信箱確認！");
     }
   };
 
@@ -41,6 +45,12 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("auth-section").style.display = "block";
     document.getElementById("app-section").style.display = "none";
   };
+
+  // 📌 測試連線
+  supabase.auth.getSession().then(({ data, error }) => {
+    console.log("✅ Supabase 已連接：", data);
+    if (error) console.error("❌ 發生錯誤：", error);
+  });
 });
 
 async function showApp() {
@@ -61,39 +71,16 @@ async function showApp() {
   updateStatus();
 }
 
-// 儲存設定
-async function saveSettings() {
-  const hourly_rate = parseInt(document.getElementById("hourly-rate").value);
-  const payday = parseInt(document.getElementById("payday").value);
-  const { data: { user } } = await supabase.auth.getUser();
-
-  await supabase.from("user_settings").upsert({
-    user_id: user.id,
-    hourly_rate,
-    payday
-  });
-  alert("設定已儲存！");
-}
-
-async function loadSettings() {
-  const { data: { user } } = await supabase.auth.getUser();
-  const { data, error } = await supabase.from("user_settings").select("*").eq("user_id", user.id).single();
-  if (data) {
-    document.getElementById("hourly-rate").value = data.hourly_rate || "";
-    document.getElementById("payday").value = data.payday || "";
-  }
-}
-
-// 摸魚功能
-function startMoyu() {
+// 其他功能照原本寫的放在下面
+window.startMoyu = function () {
   const now = Date.now();
   localStorage.setItem("startTime", now.toString());
   document.getElementById("start-btn").disabled = true;
   document.getElementById("end-btn").disabled = false;
   updateStatus();
-}
+};
 
-async function endMoyu() {
+window.endMoyu = async function () {
   const startStr = localStorage.getItem("startTime");
   if (!startStr) return alert("你還沒開始摸魚");
 
@@ -115,20 +102,40 @@ async function endMoyu() {
 
   fetchStats();
   updateStatus();
+};
+
+window.saveSettings = async function () {
+  const hourly_rate = parseInt(document.getElementById("hourly-rate").value);
+  const payday = parseInt(document.getElementById("payday").value);
+  const { data: { user } } = await supabase.auth.getUser();
+
+  await supabase.from("user_settings").upsert({
+    user_id: user.id,
+    hourly_rate,
+    payday
+  });
+  alert("設定已儲存！");
+};
+
+async function loadSettings() {
+  const { data: { user } } = await supabase.auth.getUser();
+  const { data, error } = await supabase.from("user_settings").select("*").eq("user_id", user.id).single();
+  if (data) {
+    document.getElementById("hourly-rate").value = data.hourly_rate || "";
+    document.getElementById("payday").value = data.payday || "";
+  }
 }
 
+async function fetchStats() {
+  // 尚未實作：撈取統計資料
+}
 
-
-// 將主要函式綁定到全域，讓 HTML onclick 可以使用
-window.signUp = signUp;
-window.signIn = signIn;
-window.signOut = signOut;
-window.startMoyu = startMoyu;
-window.endMoyu = endMoyu;
-window.saveSettings = saveSettings;
-
-// 測試是否連上 Supabase（打開 F12 看 Console 有沒有印出結果）
-supabase.auth.getSession().then(({ data, error }) => {
-  console.log("✅ Supabase 已連接：", data)
-  if (error) console.error("❌ 發生錯誤：", error)
-})
+function updateStatus() {
+  const startTime = localStorage.getItem("startTime");
+  const status = document.getElementById("status");
+  if (startTime) {
+    status.innerText = "你正在努力地摸魚中～";
+  } else {
+    status.innerText = "你目前還沒開始摸魚喔～";
+  }
+}
