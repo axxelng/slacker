@@ -89,17 +89,15 @@ async function checkSettings() {
   }
 }
 
-// ✅ 顯示設定表單
-window.showSettings = () => {
-  document.getElementById("settings-form").style.display = "block";
-  document.getElementById("edit-settings-btn").style.display = "none";
-};
-// ✅ 切換設定顯示
 window.toggleSettings = () => {
   const section = document.getElementById("settings-form");
-  if (!section) return;
-  section.style.display = (section.style.display === "none") ? "block" : "none";
-  document.getElementById("edit-settings-btn")?.style.display = "none";
+  const toggleBtn = document.getElementById("edit-settings-btn");
+
+  if (!section || !toggleBtn) return;
+
+  const isHidden = section.style.display === "none";
+  section.style.display = isHidden ? "block" : "none";
+  toggleBtn.textContent = isHidden ? "❌ 關閉設定" : "⚙️ 修改設定";
 };
 
 
